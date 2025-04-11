@@ -28,11 +28,26 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController maxHeightController = TextEditingController();
   final TextEditingController limitController = TextEditingController();
 
-
+  Future<void> _playVideo(XFile? file) async {
+    if (file != null && mounted) {
+      await _disposeVideoController();
+      late VideoPlayerController controller;
+      if (kIsWeb) {
+        controller = VideoPlayerController.networkUrl(Uri.parse(file.path));
+      } else {
+        controller = VideoPlayerController.file(File(file.path));
+      }
+      _controller = controller;
+      
+      const double volume = kIsWeb ? 0.0 : 1.0;
+      await controller.setVolume(volume);
+      await controller.initialize();
+      await controller.setLooping(true);
+      await controller.play();
+      setState(() {});
+    }
+  }
   
-
-
-
   @override
   Widget build(BuildContext context) {
     return const Placeholder();
